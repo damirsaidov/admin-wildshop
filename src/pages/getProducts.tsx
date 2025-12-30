@@ -2,14 +2,16 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useGetProductsByCategQuery } from "../services/api";
 import { useEffect, useState } from "react";
 const GetProduct = () => {
-  const { id } = useParams<{ id: string }>(); 
-  const { data, isLoading, error } = useGetProductsByCategQuery(id ?? "");  
-  const navigate = useNavigate();  
+  const { id } = useParams<{ id: string }>();
+  const { data, isLoading, error } = useGetProductsByCategQuery(id ?? "");
+  const navigate = useNavigate();
   const [categories, setCategories] = useState<any[]>([]);
   async function getCategory() {
     try {
-      const res = await fetch("https://store-api.softclub.tj/Category/get-categories");
-      const data = await res.json();      
+      const res = await fetch(
+        "https://store-api.softclub.tj/Category/get-categories"
+      );
+      const data = await res.json();
       if (data && data.data) {
         setCategories(data.data);
       } else {
@@ -22,7 +24,7 @@ const GetProduct = () => {
   useEffect(() => {
     getCategory();
   }, []);
-  if (isLoading) return;  
+  if (isLoading) return;
   if (error) {
     return (
       <div className="error-container">
