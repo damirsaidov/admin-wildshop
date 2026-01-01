@@ -9,7 +9,7 @@ const Login = () => {
   const [messageApi, context] = useMessage();
   async function login() {
     try {
-      const res = await fetch("http://37.27.29.18:8002/Account/login", {
+      const res = await fetch("https://store-api.softclub.tj/Account/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userName: name, password: pass }),
@@ -20,8 +20,14 @@ const Login = () => {
       const data = await res.json();
       localStorage.setItem("token", data.data);
       localStorage.setItem("name", name);
-      messageApi.success("Вход успешен");
-      setTimeout(() => navigate("/"), 2000);
+      if (name != "SuperAdmin") {
+        messageApi.error("Вы не являетесь администратором!");
+        localStorage.removeItem("token")
+        return;
+      } else {
+        messageApi.success("Вход успешен");
+        setTimeout(() => navigate("/"), 2000);
+      }
     } catch (error) {
       console.error(error);
       messageApi.error("Неправильный пароль или имя!");
@@ -40,15 +46,17 @@ const Login = () => {
           <Input
             value={name}
             onChange={(e: any) => setName(e.target.value)}
-            style={{ padding: "10px", margin: "10px", width: "99%" }}
-            className="w-full"
+            style={{ padding: "10px", margin: "10px", width: "99%", backgroundColor:"black", color:"white" }}
+
+            className="plc w-full"
             placeholder="Имя пользователя"
           />
           <Input
             value={pass}
             onChange={(e: any) => setPass(e.target.value)}
-            style={{ padding: "10px", margin: "10px", width: "99%" }}
-            className="w-full"
+            style={{ padding: "10px", margin: "10px", width: "99%",backgroundColor:"black", color:"white"  }
+          }
+            className="plc w-full"
             type={"password"}
             placeholder="Пароль"
           />
