@@ -120,12 +120,6 @@ const AboutProduct = () => {
               >
                 Назад
               </button>
-              <button
-                onClick={() => navigate("/checkout")}
-                className="flex-1 px-8 py-4 rounded-xl font-semibold text-white bg-linear-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 shadow-lg shadow-indigo-200/50 transform transition-all active:scale-[0.98] cursor-pointer"
-              >
-                Перейти к покупке
-              </button>
             </div>
           </div>
         </div>

@@ -12,7 +12,6 @@ const Error = () => {
     </StyledWrapper>
   );
 }
-
 const StyledWrapper = styled.div`
   .tv-container {
     display: flex;

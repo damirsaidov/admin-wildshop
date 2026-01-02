@@ -13,15 +13,81 @@ type Product = {
   image: string;
 };
 const Home = () => {
+  const [images, setImages] = useState<File[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modal, showModal] = useState<boolean>(false);
   const [brands, setBrands] = useState<any>(null);
   const [brandId, setBrandId] = useState<number | undefined>();
+  const [productName, setProductName] = useState<string>("");
+  const [productDesc, setProductDesc] = useState<string>("");
+  const [productQuantity, setProductQuantity] = useState<number>();
+  const [subCategory, setSubCategory] = useState<any>();
+  const [subCategId, setSubCategId] = useState<number | undefined>();
   const [colors, setColors] = useState<any>(null);
   const [colorId, setColorId] = useState<number | undefined>();
+  const [productPrice, setProductPrice] = useState<number>();
   const navigate = useNavigate();
+  const addProduct = async () => {
+    try {
+      if (
+        images.length === 0 ||
+        brandId == null ||
+        colorId == null ||
+        subCategId == null ||
+        !productName ||
+        !productDesc ||
+        productQuantity == null ||
+        productPrice == null
+      ) {
+        alert("Заполни все обязательные поля");
+        return;
+      }
+      const formData = new FormData();
+      images.forEach((file) => {
+        formData.append("Images", file);
+      });
+      formData.append("BrandId", brandId.toString());
+      formData.append("ColorId", colorId.toString());
+      formData.append("SubCategoryId", subCategId.toString());
+      formData.append("ProductName", productName);
+      formData.append("Description", productDesc);
+      formData.append("Quantity", productQuantity.toString());
+      formData.append("Price", productPrice.toString());
+      formData.append("Code", Date.now().toString());
+      formData.append("HasDiscount", "false");
+      formData.append("DiscountPrice", "0");
+      const res = await fetch(
+        "https://store-api.softclub.tj/Product/add-product",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: formData,
+        }
+      );
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("SERVER:", text);
+        throw new Error(text);
+      }
+      showModal(false);
+      getProducts();
+      setImages([]);
+      setProductName("");
+      setProductDesc("");
+      setProductQuantity(undefined);
+      setProductPrice(undefined);
+      setBrandId(undefined);
+      setColorId(undefined);
+      setSubCategId(undefined);
+    } catch (err) {
+      console.error(err);
+      alert("Ошибка при добавлении продукта");
+    }
+  };
   async function deleteProduct(id: number | string) {
     try {
       await fetch(
@@ -41,6 +107,19 @@ const Home = () => {
       const res = await fetch("https://store-api.softclub.tj/Brand/get-brands");
       const json = await res.json();
       setBrands(json.data);
+    } catch (err) {
+      setError("Ошибка загрузки товаров");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const getSubCategs = async () => {
+    try {
+      const res = await fetch(
+        "https://store-api.softclub.tj/SubCategory/get-sub-category"
+      );
+      const json = await res.json();
+      setSubCategory(json.data);
     } catch (err) {
       setError("Ошибка загрузки товаров");
     } finally {
@@ -75,6 +154,7 @@ const Home = () => {
     getProducts();
     getBrands();
     getColors();
+    getSubCategs();
   }, []);
   if (loading)
     return (
@@ -126,11 +206,9 @@ const Home = () => {
               <p className="mt-3 text-sm text-yellow-500">★ 4.8 (26)</p>
               <h2 className="font-semibold mt-1 truncate">{p.productName}</h2>
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-red-500 font-bold">
-                  {p.discountPrice} $
-                </span>
+                <span className="text-red-500 font-bold">{p.price} $</span>
                 <span className="line-through text-gray-400 text-sm">
-                  {p.price} $
+                  {p.discountPrice} $
                 </span>
               </div>
               <button
@@ -144,7 +222,7 @@ const Home = () => {
         })}
         <Modal
           open={modal}
-          onOk={() => showModal(false)}
+          onOk={addProduct}
           onCancel={() => showModal(false)}
           title="Add product"
           okType="link"
@@ -152,6 +230,7 @@ const Home = () => {
           <input
             type="file"
             multiple
+            onChange={(e) => setImages(Array.from(e.target.files || []))}
             className="p-2 w-full border rounded mx-2 my-3"
           />
           <select
@@ -173,6 +252,48 @@ const Home = () => {
             {colors?.map((e: any) => (
               <option key={e.id} value={e.id}>
                 {e.colorName}
+                <div className="flex items-center gap-4">
+                  <span className="text-lg font-medium text-gray-700"></span>
+                </div>
+              </option>
+            ))}
+          </select>
+          <input
+            type="text"
+            value={productName}
+            placeholder="Product name"
+            onChange={(e) => setProductName(e.target.value)}
+            className="p-2 w-full border rounded mx-2 my-3"
+          />
+          <input
+            type="text"
+            value={productDesc}
+            placeholder="Product description"
+            onChange={(e) => setProductDesc(e.target.value)}
+            className="p-2 w-full border rounded mx-2 my-3"
+          />
+          <input
+            type="number"
+            value={productQuantity}
+            placeholder="Product Quantity"
+            onChange={(e: any) => setProductQuantity(e.target.value)}
+            className="p-2 w-full border rounded mx-2 my-3"
+          />
+          <input
+            type="number"
+            value={productPrice}
+            placeholder="Product Price"
+            onChange={(e: any) => setProductPrice(e.target.value)}
+            className="p-2 w-full border rounded mx-2 my-3"
+          />
+          <select
+            value={subCategId}
+            onChange={(e) => setSubCategId(Number(e.target.value))}
+            className="mx-2 my-3 w-full border p-2 rounded"
+          >
+            {subCategory?.map((e: any) => (
+              <option key={e.id} value={e.id}>
+                {e.subCategoryName}
               </option>
             ))}
           </select>

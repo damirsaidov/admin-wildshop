@@ -5,6 +5,8 @@ import Profile from "./pages/account";
 import Home from "./pages/home";
 import AboutProduct from "./pages/aboutProduct";
 import Categories from "./pages/categories";
+import Colors from "./pages/colors";
+import SubCategories from "./pages/subCategories";
 const App = () => {
   const router = createBrowserRouter([
     {
@@ -23,14 +25,21 @@ const App = () => {
           path: "profile",
           element: <Profile />,
         },
-
         {
           path: "categories",
           element: <Categories />,
         },
         {
+          path: "colors",
+          element: <Colors />,
+        },
+        {
           path: "products/:id",
           element: <AboutProduct />,
+        },
+        {
+          path: "SubCategories",
+          element: <SubCategories />,
         },
       ],
     },

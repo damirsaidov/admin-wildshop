@@ -90,10 +90,10 @@ body {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .ant-modal{
-  width: 700px!important;
+  width: 600px!important;
 }
 .ant-modal-container{
-  height: 700px!important;
+  height: 640px!important;
   background-color: #121217!important;
   color: white;
   
