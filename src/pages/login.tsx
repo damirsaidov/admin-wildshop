@@ -8,6 +8,7 @@ const Login = () => {
   const [pass, setPass] = useState<string>("");
   const [messageApi, context] = useMessage();
   async function login() {
+    if(!name || !pass) alert("Заполните все поля")
     try {
       const res = await fetch("https://store-api.softclub.tj/Account/login", {
         method: "POST",

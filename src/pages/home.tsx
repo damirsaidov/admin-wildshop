@@ -3,8 +3,8 @@ import { MdDelete, MdOutlineAddCircle } from "react-icons/md";
 import { AiFillInfoCircle } from "react-icons/ai";
 import Loader from "./loader";
 import { Modal } from "antd";
-import { HiX } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import Error from "./error";
 type Product = {
   id: number;
   productName: string;
@@ -71,7 +71,6 @@ const Home = () => {
       if (!res.ok) {
         const text = await res.text();
         console.error("SERVER:", text);
-        throw new Error(text);
       }
       showModal(false);
       getProducts();
@@ -151,29 +150,16 @@ const Home = () => {
     }
   };
   function CheckLogin() {
-    if(!localStorage.getItem("token")) navigate("/login")
+    if (!localStorage.getItem("token")) navigate("/login");
   }
   useEffect(() => {
     getProducts();
-    CheckLogin()
+    CheckLogin();
     getBrands();
     getColors();
     getSubCategs();
   }, []);
-  if (loading)
-    return (
-      <div className="text-center pt-20 flex justify-center max-w-350 m-auto">
-        <Loader />
-      </div>
-    );
-  if (error) {
-    return (
-      <div className="text-center pt-20 flex justify-center max-w-350 m-auto">
-        <Loader />
-      </div>
-    );
-  }
-return (
+  return (
     <div className="max-w-375 m-auto">
       <div className="flex justify-end">
         <div
@@ -183,47 +169,56 @@ return (
           <MdOutlineAddCircle /> <span>Добавить</span>
         </div>
       </div>
-      <div className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-        {products.map((p) => {
-          const discount = Math.round(
-            ((p.price - p.discountPrice) / p.price) * 100
-          );
-          return (
-            <div
-              key={p.id}
-              className="max-w-70 w-full mx-auto relative bg-white dark:bg-slate-900 rounded-2xl shadow hover:shadow-2xl transition p-4"
-            >
-              <AiFillInfoCircle
-                onClick={() => navigate(`/products/${p.id}`)}
-                size={24}
-              />
-              <HiX size={20} className="absolute ml-11 bg-red-500 rounded" />
-              {discount && (
-                <span className="absolute top-6 right-12 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                  {discount}%
-                </span>
-              )}
-              <img
-                src={`https://store-api.softclub.tj/images/${p.image}`}
-                className="h-48 w-full object-contain "
-              />
-              <p className="mt-3 text-sm text-yellow-500">★ 4.8 (26)</p>
-              <h2 className="font-semibold mt-1 truncate">{p.productName}</h2>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-red-500 font-bold">{p.price} $</span>
-                <span className="line-through text-gray-400 text-sm">
-                  {p.discountPrice} $
-                </span>
-              </div>
-              <button
-                onClick={() => deleteProduct(p.id)}
-                className="flex items-center text-center m-auto justify-center gap-1 mt-4 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition"
-              >
-                <MdDelete /> <span>Удалить</span>
-              </button>
-            </div>
-          );
-        })}
+      <div>
+        {loading ? (
+          <Loader />
+        ) : error ? (
+          <Error />
+        ) : (
+          <div className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+            {products.map((p) => {
+              const discount = Math.round(
+                ((p.price - p.discountPrice) / p.price) * 100
+              );
+              return (
+                <div
+                  key={p.id}
+                  className="max-w-70 w-full mx-auto relative bg-white dark:bg-slate-900 rounded-2xl shadow hover:shadow-2xl transition p-4"
+                >
+                  <AiFillInfoCircle
+                    onClick={() => navigate(`/products/${p.id}`)}
+                    size={24}
+                  />
+                  {discount && (
+                    <span className="absolute top-6 right-12 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      {discount}%
+                    </span>
+                  )}
+                  <img
+                    src={`https://store-api.softclub.tj/images/${p.image}`}
+                    className="h-48 w-full object-contain "
+                  />
+                  <p className="mt-3 text-sm text-yellow-500">★ 4.8 (26)</p>
+                  <h2 className="font-semibold mt-1 truncate">
+                    {p.productName}
+                  </h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-red-500 font-bold">{p.price} $</span>
+                    <span className="line-through text-gray-400 text-sm">
+                      {p.discountPrice} $
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => deleteProduct(p.id)}
+                    className="flex items-center text-center m-auto justify-center gap-1 mt-4 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition"
+                  >
+                    <MdDelete /> <span>Удалить</span>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
         <Modal
           open={modal}
           onOk={addProduct}
