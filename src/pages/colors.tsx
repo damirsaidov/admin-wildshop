@@ -60,9 +60,9 @@ const Colors = () => {
       <form onSubmit={addColor} className="flex gap-2 max-w-100 items-center">
         <input
           value={colorName}
-          onChange={(e) => setColorName(e.target.value)}
+          onChange={(e) => setColorName(encodeURIComponent(e.target.value))}
           placeholder="Product description"
-          className="p-2 w-full border rounded   mx-2 my-3"
+          className="p-2 w-full border rounded mx-2 my-3"
         />
         <button className="px-6 py-2 rounded-xl bg-blue-500 border ">
           Add
@@ -83,7 +83,10 @@ const Colors = () => {
                 {e.colorName}
               </h2>
               <p className="text-sm text-gray-500 mt-1">Color ID: {e.id}</p>
-              <button onClick={() => deleteColor(e.id)} className="mt-4 w-full py-2 rounded-lg bg-red-500/90 hover:bg-red-600 text-white text-sm font-medium transition">
+              <button
+                onClick={() => deleteColor(e.id)}
+                className="mt-4 w-full py-2 rounded-lg bg-red-500/90 hover:bg-red-600 text-white text-sm font-medium transition"
+              >
                 Delete
               </button>
             </div>

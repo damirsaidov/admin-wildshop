@@ -12,49 +12,59 @@ const Layout = () => {
   if (!localStorage.getItem("token")) localStorage.removeItem("name");
   const navigate = useNavigate();
   function roleUser() {
-    if(!localStorage.getItem("token")) navigate("/login")
+    if (!localStorage.getItem("token")) navigate("/login");
   }
-useEffect(() => {
-  roleUser()
-},[])
+  useEffect(() => {
+    roleUser();
+  }, []);
   return (
-    <div onMouseEnter={() => localStorage.getItem("token") ? "" : navigate("/login")} className="min-h-screen flex bg-gray-100 dark:bg-[#0f172a] text-gray-900 dark:text-gray-100">
-      <aside style={{display:localStorage.getItem("token") ? "block" : "none"}} className="w-64 bg-white dark:bg-[#020617] border-r dark:border-slate-800">
+    <div
+      onMouseEnter={() =>
+        localStorage.getItem("token") ? "" : navigate("/login")
+      }
+      className="min-h-screen flex bg-gray-100 dark:bg-[#0f172a] text-gray-900 dark:text-gray-100"
+    >
+      <aside
+        style={{ display: localStorage.getItem("token") ? "block" : "none" }}
+        className="w-64 bg-white dark:bg-[#020617] border-r dark:border-slate-800"
+      >
         <div
           className="p-6 text-xl font-bold cursor-pointer"
           onClick={() => navigate("/")}
         >
           Админ панель
         </div>
-        <nav className="flex flex-col gap-2 px-4">
-          <button
-            onClick={() => navigate("/")}
-            className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
-          >
-            <AiOutlineProduct size={18} />
-            Продукты
-          </button>
-          <button
-            onClick={() => navigate("categories")}
-            className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
-          >
-            <MdOutlineCategory size={18} />
-            Категории
-          </button>
-          <button
-            onClick={() => navigate("subCategories")}
-            className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
-          >
-            <BiCategory size={18} />
-            Субкатегории
-          </button>
-          <button
-            onClick={() => navigate("colors")}
-            className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
-          >
-            <RiColorFilterAiLine size={18} />
-            Цвета
-          </button>
+        <nav className="flex flex-col gap-2  px-4">
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
+            >
+              <AiOutlineProduct size={18} />
+              Продукты
+            </button>
+            <button
+              onClick={() => navigate("categories")}
+              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
+            >
+              <MdOutlineCategory size={18} />
+              Категории
+            </button>
+            <button
+              onClick={() => navigate("subCategories")}
+              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
+            >
+              <BiCategory size={18} />
+              Субкатегории
+            </button>
+            <button
+              onClick={() => navigate("colors")}
+              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
+            >
+              <RiColorFilterAiLine size={18} />
+              Цвета
+            </button>
+          </div>
           <button
             onClick={() => navigate("profile")}
             className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
@@ -68,7 +78,11 @@ useEffect(() => {
         <header className="h-16 px-6 flex items-center justify-between bg-white dark:bg-[#020617] border-b dark:border-slate-800">
           <h1 className="font-semibold text-lg">Админ таблица</h1>
           <div className="flex items-center gap-4">
-            <IoMdHome size={25} className="cursor-pointer" onClick={() => navigate("/")} />
+            <IoMdHome
+              size={25}
+              className="cursor-pointer"
+              onClick={() => navigate("/")}
+            />
             {localStorage.getItem("token") ? (
               <FaUser
                 size={20}
