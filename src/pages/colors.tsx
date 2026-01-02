@@ -23,7 +23,7 @@ const Colors = () => {
     e.preventDefault();
     try {
       await fetch(
-        `https://store-api.softclub.tj/Color/add-color?ColorName=${colorName}`,
+        `https://store-api.softclub.tj/Color/add-color?ColorName=${encodeURIComponent(colorName)}`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -60,7 +60,7 @@ const Colors = () => {
       <form onSubmit={addColor} className="flex gap-2 max-w-100 items-center">
         <input
           value={colorName}
-          onChange={(e) => setColorName(encodeURIComponent(e.target.value))}
+          onChange={(e) => setColorName(e.target.value)}
           placeholder="Product description"
           className="p-2 w-full border rounded mx-2 my-3"
         />
