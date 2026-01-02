@@ -7,12 +7,19 @@ import { CgProfile } from "react-icons/cg";
 import { RiColorFilterAiLine } from "react-icons/ri";
 import { BiCategory } from "react-icons/bi";
 import { IoMdHome } from "react-icons/io";
+import { useEffect } from "react";
 const Layout = () => {
   if (!localStorage.getItem("token")) localStorage.removeItem("name");
   const navigate = useNavigate();
+  function roleUser() {
+    if(!localStorage.getItem("token")) navigate("/login")
+  }
+useEffect(() => {
+  roleUser()
+},[])
   return (
-    <div className="min-h-screen flex bg-gray-100 dark:bg-[#0f172a] text-gray-900 dark:text-gray-100">
-      <aside className="w-64 bg-white dark:bg-[#020617] border-r dark:border-slate-800">
+    <div onMouseEnter={() => localStorage.getItem("token") ? "" : navigate("/login")} className="min-h-screen flex bg-gray-100 dark:bg-[#0f172a] text-gray-900 dark:text-gray-100">
+      <aside style={{display:localStorage.getItem("token") ? "block" : "none"}} className="w-64 bg-white dark:bg-[#020617] border-r dark:border-slate-800">
         <div
           className="p-6 text-xl font-bold cursor-pointer"
           onClick={() => navigate("/")}

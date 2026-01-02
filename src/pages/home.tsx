@@ -169,7 +169,7 @@ const Home = () => {
       </div>
     );
   }
-  return (
+  return localStorage.getItem("token") ? (
     <div className="max-w-375 m-auto">
       <div className="flex justify-end">
         <div
@@ -300,6 +300,8 @@ const Home = () => {
         </Modal>
       </div>
     </div>
+  ) : (
+    navigate("/login")
   );
 };
 export default Home;
