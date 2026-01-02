@@ -150,8 +150,12 @@ const Home = () => {
       setLoading(false);
     }
   };
+  function CheckLogin() {
+    if(!localStorage.getItem("token")) navigate("/login")
+  }
   useEffect(() => {
     getProducts();
+    CheckLogin()
     getBrands();
     getColors();
     getSubCategs();
@@ -169,7 +173,7 @@ const Home = () => {
       </div>
     );
   }
-  return localStorage.getItem("token") ? (
+return (
     <div className="max-w-375 m-auto">
       <div className="flex justify-end">
         <div
@@ -300,8 +304,6 @@ const Home = () => {
         </Modal>
       </div>
     </div>
-  ) : (
-    navigate("/login")
   );
 };
 export default Home;
