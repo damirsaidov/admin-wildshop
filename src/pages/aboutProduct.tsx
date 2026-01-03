@@ -53,6 +53,9 @@ const AboutProduct = () => {
     getProduct();
   };
   useEffect(() => {
+    if (!localStorage.getItem("token")) navigate("/login");
+  }, []);
+  useEffect(() => {
     getProduct();
   }, []);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);

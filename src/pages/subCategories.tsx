@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Loader from "./loader";
 import { Modal } from "antd";
+import { useNavigate } from "react-router-dom";
 type SubCategory = {
   id: number;
   subCategoryName: string;
@@ -93,6 +94,10 @@ const Categories = () => {
     getCategories();
     getCategs();
   }, []);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!localStorage.getItem("token")) navigate("/login");
+  }, []);
   if (loading) {
     return (
       <div className="flex justify-center items-center h-60">
@@ -115,15 +120,13 @@ const Categories = () => {
         <select
           value={categId}
           className="border border-gray-400 w-fit sm:w-62 px-3 py-2 rounded"
-
           onChange={(e) => setCategId(e.target.value)}
         >
           {categs.map((e: any) => (
             <option value={e.id}>{e.categoryName}</option>
           ))}
         </select>
-        <button className="px-4 py-2 rounded bg-blue-500 w-full sm:w-auto"
->
+        <button className="px-4 py-2 rounded bg-blue-500 w-full sm:w-auto">
           Add
         </button>
       </form>
@@ -134,7 +137,6 @@ const Categories = () => {
             className="group bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl shadow-md hover:shadow-xl transition-all"
           >
             <div className="p-4 flex flex-col text-center">
-
               <h2 className="text-sm sm:text-base font-semibold text-gray-800 dark:text-white group-hover:text-blue-500 transition">
                 {e.subCategoryName}
               </h2>

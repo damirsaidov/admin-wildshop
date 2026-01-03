@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Loader from "./loader";
 import { Modal, Upload } from "antd";
+import { useNavigate } from "react-router-dom";
 type Category = {
   id: number;
   categoryName: string;
@@ -62,6 +63,10 @@ const Categories = () => {
     setEditFile(null);
     setEditOpen(true);
   }
+  const navigate = useNavigate()
+  useEffect(() => {
+    if (!localStorage.getItem("token")) navigate("/login");
+  }, []);
   async function editCategory() {
     const formData = new FormData();
     formData.append("Id", String(editId));

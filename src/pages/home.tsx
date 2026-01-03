@@ -13,6 +13,7 @@ type Product = {
   image: string;
 };
 const Home = () => {
+  
   const [images, setImages] = useState<File[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -215,6 +216,9 @@ const Home = () => {
     getBrands();
     getColors();
     getSubCategs();
+  }, []);
+  useEffect(() => {
+    if (!localStorage.getItem("token")) navigate("/login");
   }, []);
   return (
     <div className="max-w-375 m-auto">

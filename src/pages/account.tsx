@@ -1,8 +1,12 @@
+import { useEffect } from "react";
 import { IoIosLogOut } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 const Profile = () => {
   const navigate = useNavigate();
-return (
+  useEffect(() => {
+    if (!localStorage.getItem("token")) navigate("/login");
+  }, []);
+  return (
     <div className="flex pt-12 flex-col text-center justify-self-center justify-center m-auto">
       <img
         className="rounded-[100%] w-48 p-2 object-cover m-auto"
@@ -11,27 +15,24 @@ return (
       <h1 className="text-center">{localStorage.getItem("name") || "гость"}</h1>
       {localStorage.getItem("token") ? (
         <button
-        onClick={() => [
-          localStorage.removeItem("token"),
-          localStorage.removeItem("name"),
-          navigate("/"),
-        ]}
-        className="bg-red-500 text-white text-center justify-center rounded-2xl p-2 px-4 flex items-center w-30 m-auto"
-      >
-        Выход <span>{<IoIosLogOut />}</span>
-      </button>
+          onClick={() => [
+            localStorage.removeItem("token"),
+            localStorage.removeItem("name"),
+            navigate("/"),
+          ]}
+          className="bg-red-500 text-white text-center justify-center rounded-2xl p-2 px-4 flex items-center w-30 m-auto"
+        >
+          Выход <span>{<IoIosLogOut />}</span>
+        </button>
       ) : (
         <button
-        onClick={() => [
-          navigate("/login"),
-        ]}
-        className="bg-blue-500 text-white text-center justify-center rounded-2xl p-2 px-4 flex items-center w-30 m-auto"
-      >
-        Войти <span>{<IoIosLogOut />}</span>
-      </button>
+          onClick={() => [navigate("/login")]}
+          className="bg-blue-500 text-white text-center justify-center rounded-2xl p-2 px-4 flex items-center w-30 m-auto"
+        >
+          Войти <span>{<IoIosLogOut />}</span>
+        </button>
       )}
-      
     </div>
-  ) 
+  );
 };
 export default Profile;

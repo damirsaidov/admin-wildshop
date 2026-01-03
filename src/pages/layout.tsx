@@ -33,6 +33,7 @@ const Layout = () => {
   return (
     <div className="min-h-screen flex bg-gray-100 dark:bg-[#0f172a] text-gray-900 dark:text-gray-100">
       <aside
+      style={{display:localStorage.getItem('token') ? "block" : "none"}}
         className={`fixed md:static top-0 left-0 z-50 h-screen pt-16 md:pt-0 w-64 bg-white dark:bg-[#020617] border-r dark:border-slate-800 transform transition-transform duration-300 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}

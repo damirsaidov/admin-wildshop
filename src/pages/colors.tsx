@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Loader from "./loader";
 import { Modal } from "antd";
+import { useNavigate } from "react-router-dom";
 type Color = {
   id: number;
   colorName: string;
@@ -55,6 +56,10 @@ const Colors = () => {
       console.error(error);
     }
   }
+  const navigate = useNavigate()
+    useEffect(() => {
+    if (!localStorage.getItem("token")) navigate("/login");
+  }, []);
   async function deleteColor(e: number) {
     try {
       await fetch(`https://store-api.softclub.tj/Color/delete-color?id=${e}`, {
