@@ -98,7 +98,7 @@ const Categories = () => {
           placeholder="Category name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="border px-3 py-2 rounded"
+          className="category-input border px-3 py-2 rounded"
         />
         <input
           type="file"
@@ -112,20 +112,20 @@ const Categories = () => {
           Add
         </button>
       </div>
-      <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="p-4 grid grid-cols-2 flex-wrap sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
         {categories.map((e) => (
           <div
             key={e.id}
-            className="group bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl shadow hover:shadow-xl transition overflow-hidden"
+            className=" category-card group  group bg-white dark:bg-slate-900 border dark:border-slate-800 rounded-2xl shadow hover:shadow-xl transition overflow-hidden"
           >
-            <div className="h-40 bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
+            <div className="h-28 sm:h-36 bg-gray-100 dark:bg-slate-800 flex items-center justify-center">
               <img
                 src={`https://store-api.softclub.tj/images/${e.categoryImage}`}
                 className="h-full object-contain"
               />
             </div>
             <div className="p-4 text-center">
-              <h1 className="text-lg font-semibold group-hover:text-blue-500 transition">
+              <h1 className="text-sm sm:text-base font-semibold group-hover:text-blue-500 transition">
                 {e.categoryName}
               </h1>
               <p className="text-sm text-gray-500 mt-1">Category #{e.id}</p>
