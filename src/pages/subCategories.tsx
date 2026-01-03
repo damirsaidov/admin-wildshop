@@ -119,7 +119,7 @@ const Categories = () => {
         />
         <select
           value={categId}
-          className="border border-gray-400 w-fit sm:w-62 px-3 py-2 rounded"
+          className="border border-gray-400 w-fit py-2.75 sm:w-62 p-2 rounded"
           onChange={(e) => setCategId(e.target.value)}
         >
           {categs.map((e: any) => (
