@@ -1,26 +1,66 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "./loader";
+import { Modal } from "antd";
 const AboutProduct = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [data, setData] = useState<any>([])
+  const [data, setData] = useState<any>([]);
   async function getProduct() {
     try {
-        let res = await fetch(`https://store-api.softclub.tj/Product/get-product-by-id?id=${id}`)
-        let data = await res.json()
-        setData(data)
+      let res = await fetch(
+        `https://store-api.softclub.tj/Product/get-product-by-id?id=${id}`
+      );
+      let data = await res.json();
+      setData(data);
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
   }
+  const addImageToProduct = async () => {
+    if (!id || newImages.length === 0) return;
+    const formData = new FormData();
+    formData.append("ProductId", id);
+    newImages.forEach((f) => formData.append("Files", f));
+    const res = await fetch(
+      "https://store-api.softclub.tj/Product/add-image-to-product",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: formData,
+      }
+    );
+    if (res.ok) {
+      setAddImageModal(false);
+      setNewImages([]);
+      getProduct();
+    }
+  };
+  const deleteSelectedImage = async () => {
+    const imageId = product?.images?.[selectedImageIndex]?.id;
+    await fetch(
+      `https://store-api.softclub.tj/Product/delete-image-from-product?imageId=${imageId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    setSelectedImageIndex(0);
+    getProduct();
+  };
   useEffect(() => {
-    getProduct()
-  },[])
+    getProduct();
+  }, []);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const product = data?.data;
   const mainImage = product?.images?.[selectedImageIndex]?.images;
-  if(!data) return <Loader/>  
+  const [addImageModal, setAddImageModal] = useState(false);
+  const [newImages, setNewImages] = useState<File[]>([]);
+  if (!data) return <Loader />;
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-10">
       <div className="mx-auto max-w-7xl">
@@ -37,7 +77,7 @@ const AboutProduct = () => {
             <li>•</li>
             <li>
               <span
-                onClick={() => navigate("/products")}
+                onClick={() => navigate(-1)}
                 className="cursor-pointer hover:text-indigo-600 transition-colors"
               >
                 Продукты
@@ -120,10 +160,36 @@ const AboutProduct = () => {
               >
                 Назад
               </button>
+              <button
+                onClick={() => setAddImageModal(true)}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-xl"
+              >
+                Add image
+              </button>
+              <button
+                onClick={deleteSelectedImage}
+                className="px-4 py-2 bg-red-600 text-white rounded-xl "
+              >
+                Delete image
+              </button>
             </div>
           </div>
         </div>
       </div>
+      <Modal
+        open={addImageModal}
+        onOk={addImageToProduct}
+        onCancel={() => setAddImageModal(false)}
+        title="Add image"
+        okType="link"
+      >
+        <input
+          type="file"
+          multiple
+          onChange={(e) => setNewImages(Array.from(e.target.files || []))}
+          className="p-2 w-full border rounded"
+        />
+      </Modal>
     </div>
   );
 };

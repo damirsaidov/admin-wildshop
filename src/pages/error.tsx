@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 const Error = () => {
   return (
     <StyledWrapper>
@@ -11,7 +11,7 @@ const Error = () => {
       </div>
     </StyledWrapper>
   );
-}
+};
 const StyledWrapper = styled.div`
   .tv-container {
     display: flex;
@@ -26,8 +26,7 @@ const StyledWrapper = styled.div`
     background: black;
     border: 10px solid #333;
     border-radius: 10px;
-    box-shadow:
-      0 0 20px rgba(0, 0, 0, 0.8),
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8),
       inset 0 0 50px rgba(255, 255, 255, 0.2);
     overflow: hidden;
   }
@@ -109,5 +108,6 @@ const StyledWrapper = styled.div`
       transform: translate(-50%, -50%) skewX(5deg);
       opacity: 0.9;
     }
-  }`;
+  }
+`;
 export default Error;

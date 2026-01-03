@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Loader from "./loader";
+import { Modal } from "antd";
 type Color = {
   id: number;
   colorName: string;
@@ -8,6 +9,24 @@ const Colors = () => {
   const [colors, setColors] = useState<Color[]>([]);
   const [loading, setLoading] = useState(true);
   const [colorName, setColorName] = useState<string>("");
+  const [modal, setModal] = useState<boolean>(false);
+  const [editName, setEditName] = useState<string>("");
+  const [id, setId] = useState<number | string | null>(null);
+  async function editColor() {
+    setModal(false);
+    try {
+      await fetch(
+        `https://store-api.softclub.tj/Color/update-color?Id=${id}&ColorName=${editName}`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      getColors();
+    } catch (error) {
+      console.error(error);
+    }
+  }
   const getColors = async () => {
     try {
       const res = await fetch("https://store-api.softclub.tj/Color/get-colors");
@@ -23,7 +42,9 @@ const Colors = () => {
     e.preventDefault();
     try {
       await fetch(
-        `https://store-api.softclub.tj/Color/add-color?ColorName=${encodeURIComponent(colorName)}`,
+        `https://store-api.softclub.tj/Color/add-color?ColorName=${encodeURIComponent(
+          colorName
+        )}`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -57,14 +78,14 @@ const Colors = () => {
   }
   return (
     <div className="p-6">
-      <form onSubmit={addColor} className="flex gap-2 max-w-100 items-center">
+      <form onSubmit={addColor} className="flex gap-1 max-w-100 items-center">
         <input
           value={colorName}
           onChange={(e) => setColorName(e.target.value)}
           placeholder="Product description"
-          className="p-2 w-full border rounded mx-2 my-3"
+          className="p-2 w-full border border-gray-400 rounded mx-2 my-3"
         />
-        <button className="px-6 py-2 rounded-xl bg-blue-500 border ">
+        <button className="px-6 py-2 rounded-xl bg-blue-500 border-0 ">
           Add
         </button>
       </form>
@@ -83,15 +104,42 @@ const Colors = () => {
                 {e.colorName}
               </h2>
               <p className="text-sm text-gray-500 mt-1">Color ID: {e.id}</p>
-              <button
-                onClick={() => deleteColor(e.id)}
-                className="mt-4 w-full py-2 rounded-lg bg-red-500/90 hover:bg-red-600 text-white text-sm font-medium transition"
-              >
-                Delete
-              </button>
+              <div className="flex items-center gap-2 ">
+                <button
+                  onClick={() => deleteColor(e.id)}
+                  className="mt-2 w-full py-2 rounded bg-red-500/90 hover:bg-red-600 text-white text-sm font-medium transition"
+                >
+                  Delete
+                </button>
+                <button
+                  className="mt-2 w-full py-2 rounded bg-yellow-500 text-white"
+                  onClick={() => [
+                    setEditName(e.colorName),
+                    setId(e.id),
+                    setModal(true),
+                  ]}
+                >
+                  Изменить
+                </button>
+              </div>
             </div>
           </div>
         ))}
+        <Modal
+          open={modal}
+          onOk={editColor}
+          onCancel={() => setModal(false)}
+          title="Изменить цвет"
+          okType="link"
+        >
+          <input
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            placeholder="Имя цвета"
+            className="m-2 w-[95%] border px-4 py-2 rounded"
+            required
+          />
+        </Modal>
       </div>
     </div>
   );

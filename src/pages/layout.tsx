@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { MdOutlineCategory } from "react-icons/md";
 import { CiLogin } from "react-icons/ci";
@@ -17,6 +17,12 @@ const Layout = () => {
   useEffect(() => {
     roleUser();
   }, []);
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    `flex items-center gap-3 px-3 py-2 rounded transition ${
+      isActive
+        ? "bg-gray-200 dark:bg-slate-700 text-gray-900 dark:text-white"
+        : "hover:bg-gray-100 dark:hover:bg-slate-800"
+    }`;
   return (
     <div
       onMouseEnter={() =>
@@ -34,44 +40,27 @@ const Layout = () => {
         >
           Админ панель
         </div>
-        <nav className="flex flex-col gap-2  px-4">
-          <div className="flex flex-col gap-2">
-            <button
-              onClick={() => navigate("/")}
-              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
-            >
-              <AiOutlineProduct size={18} />
-              Продукты
-            </button>
-            <button
-              onClick={() => navigate("categories")}
-              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
-            >
-              <MdOutlineCategory size={18} />
-              Категории
-            </button>
-            <button
-              onClick={() => navigate("subCategories")}
-              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
-            >
-              <BiCategory size={18} />
-              Субкатегории
-            </button>
-            <button
-              onClick={() => navigate("colors")}
-              className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
-            >
-              <RiColorFilterAiLine size={18} />
-              Цвета
-            </button>
-          </div>
-          <button
-            onClick={() => navigate("profile")}
-            className="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-800"
-          >
+        <nav className="flex flex-col gap-2 px-4">
+          <NavLink to="/" className={linkClass}>
+            <AiOutlineProduct size={18} />
+            Продукты
+          </NavLink>
+          <NavLink to="categories" className={linkClass}>
+            <MdOutlineCategory size={18} />
+            Категории
+          </NavLink>
+          <NavLink to="subCategories" className={linkClass}>
+            <BiCategory size={18} />
+            Субкатегории
+          </NavLink>
+          <NavLink to="colors" className={linkClass}>
+            <RiColorFilterAiLine size={18} />
+            Цвета
+          </NavLink>
+          <NavLink to="profile" className={linkClass}>
             <CgProfile size={18} />
             Профиль
-          </button>
+          </NavLink>
         </nav>
       </aside>
       <div className="flex-1 flex flex-col">

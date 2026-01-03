@@ -8,7 +8,7 @@ const Login = () => {
   const [pass, setPass] = useState<string>("");
   const [messageApi, context] = useMessage();
   async function login() {
-    if(!name || !pass) alert("Заполните все поля")
+    if (!name || !pass) alert("Заполните все поля");
     try {
       const res = await fetch("https://store-api.softclub.tj/Account/login", {
         method: "POST",
@@ -23,7 +23,7 @@ const Login = () => {
       localStorage.setItem("name", name);
       if (name != "SuperAdmin") {
         messageApi.error("Вы не являетесь администратором!");
-        localStorage.removeItem("token")
+        localStorage.removeItem("token");
         return;
       } else {
         messageApi.success("Вход успешен");
@@ -47,19 +47,31 @@ const Login = () => {
           <Input
             value={name}
             onChange={(e: any) => setName(e.target.value)}
-            style={{ padding: "10px", margin: "10px", width: "99%", backgroundColor:"black", color:"white" }}
-
+            style={{
+              padding: "10px",
+              margin: "10px",
+              width: "99%",
+              backgroundColor: "black",
+              color: "white",
+            }}
+            required  
             className="plc w-full"
             placeholder="Имя пользователя"
           />
           <Input
             value={pass}
             onChange={(e: any) => setPass(e.target.value)}
-            style={{ padding: "10px", margin: "10px", width: "99%",backgroundColor:"black", color:"white"  }
-          }
+            style={{
+              padding: "10px",
+              margin: "10px",
+              width: "99%",
+              backgroundColor: "black",
+              color: "white",
+            }}
             className="plc w-full"
             type={"password"}
             placeholder="Пароль"
+            required
           />
           <button type="submit" className="w-full card-btn text-center">
             Войти

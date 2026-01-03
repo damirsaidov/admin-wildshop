@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Loader from "./loader";
+import { Modal } from "antd";
 type SubCategory = {
   id: number;
   subCategoryName: string;
@@ -10,6 +11,11 @@ const Categories = () => {
   const [subCategoryName, setSubCategoryName] = useState<string>("");
   const [categId, setCategId] = useState<any>(null);
   const [categs, setCategs] = useState<any>([]);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editCategoryId, setEditCategoryId] = useState<number | null>(null);
+
   async function getCategs() {
     try {
       let res = await fetch(
@@ -21,13 +27,31 @@ const Categories = () => {
       console.error(error);
     }
   }
-  async function addSubCategory(e:any) {
-    e.preventDefault()
+  async function addSubCategory(e: any) {
+    e.preventDefault();
     try {
       await fetch(
-        `https://store-api.softclub.tj/SubCategory/add-sub-category?CategoryId=${categId}&SubCategoryName=${subCategoryName}`, {method:"POST", headers:{"Authorization":`Bearer ${localStorage.getItem("token")}`}}
+        `https://store-api.softclub.tj/SubCategory/add-sub-category?CategoryId=${categId}&SubCategoryName=${subCategoryName}`,
+        {
+          method: "POST",
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
-      getCategories()
+      getCategories();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async function deleteSubCategory(id: number | string) {
+    try {
+      await fetch(
+        `https://store-api.softclub.tj/SubCategory/delete-sub-category?id=${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      getCategories();
     } catch (error) {
       console.error(error);
     }
@@ -45,6 +69,26 @@ const Categories = () => {
       setLoading(false);
     }
   };
+  function openEditModal(sub: any) {
+    setEditId(sub.id);
+    setEditName(sub.subCategoryName);
+    setEditCategoryId(categId);
+    setEditOpen(true);
+  }
+  async function editSubCategory() {
+    await fetch(
+      `https://store-api.softclub.tj/SubCategory/update-sub-category?Id=${editId}&CategoryId=${editCategoryId}&SubCategoryName=${editName}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    setEditOpen(false);
+    setLoading(true);
+    getCategories();
+  }
   useEffect(() => {
     getCategories();
     getCategs();
@@ -58,7 +102,10 @@ const Categories = () => {
   }
   return (
     <div className="p-6">
-      <form onSubmit={addSubCategory} className="flex gap-2 max-w-150 items-center">
+      <form
+        onSubmit={addSubCategory}
+        className="flex gap-2 max-w-150 items-center"
+      >
         <input
           value={subCategoryName}
           onChange={(e) => setSubCategoryName(e.target.value)}
@@ -89,12 +136,48 @@ const Categories = () => {
                 {e.subCategoryName}
               </h2>
               <p className="text-sm text-gray-500 mt-2">ID: {e.id}</p>
-              <button className="mt-4 w-full py-2 rounded-lg bg-red-500/90 hover:bg-red-600 text-white text-sm font-medium transition">
-                Delete
-              </button>
+              <div className="flex items-center gap-2 ">
+                <button
+                  onClick={() => deleteSubCategory(e.id)}
+                  className="mt-2 w-full py-2 rounded-lg bg-red-500/90 hover:bg-red-600 text-white text-sm font-medium transition"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={() => openEditModal(e)}
+                  className="mt-2 w-full py-2 rounded-lg bg-yellow-500 text-white"
+                >
+                  Edit
+                </button>
+              </div>
             </div>
           </div>
         ))}
+        <Modal
+          title="Edit SubCategory"
+          open={editOpen}
+          onCancel={() => setEditOpen(false)}
+          onOk={editSubCategory}
+          okType="link"
+        >
+          <input
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            placeholder="Subcategory name"
+            className="w-full border px-3 py-2 rounded mb-3"
+          />
+          <select
+            value={editCategoryId ?? ""}
+            onChange={(e) => setEditCategoryId(Number(e.target.value))}
+            className="w-full border px-3 py-2 rounded"
+          >
+            {categs.map((e: any) => (
+              <option key={e.id} value={e.id}>
+                {e.categoryName}
+              </option>
+            ))}
+          </select>
+        </Modal>
       </div>
     </div>
   );

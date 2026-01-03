@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { MdDelete, MdOutlineAddCircle } from "react-icons/md";
 import { AiFillInfoCircle } from "react-icons/ai";
 import Loader from "./loader";
-import { Modal } from "antd";
+import { Modal, Space } from "antd";
 import { useNavigate } from "react-router-dom";
 import Error from "./error";
 type Product = {
@@ -28,11 +28,13 @@ const Home = () => {
   const [colors, setColors] = useState<any>(null);
   const [colorId, setColorId] = useState<number | undefined>();
   const [productPrice, setProductPrice] = useState<number>();
+  const [editModal, setEditModal] = useState(false);
+  const [editId, setEditId] = useState<number | null>(null);
   const navigate = useNavigate();
   const addProduct = async () => {
     try {
       if (
-        images.length === 0 ||
+        images.length == 0 ||
         brandId == null ||
         colorId == null ||
         subCategId == null ||
@@ -87,6 +89,61 @@ const Home = () => {
       alert("Ошибка при добавлении продукта");
     }
   };
+  const editProduct = async () => {
+    if (
+      editId == null ||
+      brandId == null ||
+      colorId == null ||
+      subCategId == null ||
+      !productName ||
+      !productDesc ||
+      productQuantity == null ||
+      productPrice == null
+    ) {
+      alert("Заполни все поля");
+      return;
+    }
+    const url =
+      `https://store-api.softclub.tj/Product/update-product` +
+      `?Id=${editId}` +
+      `&BrandId=${brandId}` +
+      `&ColorId=${colorId}` +
+      `&ProductName=${productName}` +
+      `&Description=${productDesc}` +
+      `&Quantity=${productQuantity}` +
+      `&Code=${Date.now()}` +
+      `&Price=${productPrice}` +
+      `&HasDiscount=false` +
+      `&SubCategoryId=${subCategId}`;
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      console.error(text);
+      alert("Ошибка при редактировании");
+      return;
+    }
+
+    setEditModal(false);
+    getProducts();
+  };
+
+  const openEdit = (p: any) => {
+    setEditId(p.id);
+    setBrandId(p.brandId);
+    setColorId(p.colorId);
+    setSubCategId(p.subCategoryId);
+    setProductName(p.productName);
+    setProductDesc(p.description);
+    setProductQuantity(p.quantity);
+    setProductPrice(p.price);
+    setEditModal(true);
+  };
+
   async function deleteProduct(id: number | string) {
     try {
       await fetch(
@@ -208,17 +265,97 @@ const Home = () => {
                       {p.discountPrice} $
                     </span>
                   </div>
-                  <button
-                    onClick={() => deleteProduct(p.id)}
-                    className="flex items-center text-center m-auto justify-center gap-1 mt-4 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition"
-                  >
-                    <MdDelete /> <span>Удалить</span>
-                  </button>
+                  <Space>
+                    <button
+                      onClick={() => deleteProduct(p.id)}
+                      className="flex items-center text-center m-auto justify-center gap-1 px-3 mt-4 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition"
+                    >
+                      <MdDelete /> <span>Удалить</span>
+                    </button>
+                    <button
+                      onClick={() => openEdit(p)}
+                      className="flex items-center text-center m-auto justify-center gap-1 mt-4 w-full bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-3 rounded-lg transition"
+                    >
+                      Edit user
+                    </button>
+                  </Space>
                 </div>
               );
             })}
           </div>
         )}
+        <Modal
+          open={editModal}
+          onOk={editProduct}
+          onCancel={() => setEditModal(false)}
+          title="Edit product"
+          okType="link"
+        >
+          <select
+            value={brandId}
+            onChange={(e) => setBrandId(Number(e.target.value))}
+            className="mx-2 my-3 w-full border p-2 rounded"
+          >
+            {brands?.map((e: any) => (
+              <option key={e.id} value={e.id}>
+                {e.brandName}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={colorId}
+            onChange={(e) => setColorId(Number(e.target.value))}
+            className="mx-2 my-3 w-full border p-2 rounded"
+          >
+            {colors?.map((e: any) => (
+              <option key={e.id} value={e.id}>
+                {e.colorName}
+              </option>
+            ))}
+          </select>
+
+          <input
+            type="text"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+            className="p-2 w-full border rounded mx-2 my-3"
+          />
+
+          <input
+            type="text"
+            value={productDesc}
+            onChange={(e) => setProductDesc(e.target.value)}
+            className="p-2 w-full border rounded mx-2 my-3"
+          />
+
+          <input
+            type="number"
+            value={productQuantity}
+            onChange={(e: any) => setProductQuantity(e.target.value)}
+            className="p-2 w-full border rounded mx-2 my-3"
+          />
+
+          <input
+            type="number"
+            value={productPrice}
+            onChange={(e: any) => setProductPrice(e.target.value)}
+            className="p-2 w-full border rounded mx-2 my-3"
+          />
+
+          <select
+            value={subCategId}
+            onChange={(e) => setSubCategId(Number(e.target.value))}
+            className="mx-2 my-3 w-full border p-2 rounded"
+          >
+            {subCategory?.map((e: any) => (
+              <option key={e.id} value={e.id}>
+                {e.subCategoryName}
+              </option>
+            ))}
+          </select>
+        </Modal>
+
         <Modal
           open={modal}
           onOk={addProduct}
