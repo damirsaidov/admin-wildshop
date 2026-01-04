@@ -8,6 +8,7 @@ import { CgProfile } from "react-icons/cg";
 import { RiColorFilterAiLine } from "react-icons/ri";
 import { BiCategory } from "react-icons/bi";
 import { IoMdHome } from "react-icons/io";
+import { TbBrandAppgallery } from "react-icons/tb";
 import { useEffect, useState } from "react";
 const Layout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -68,6 +69,14 @@ const Layout = () => {
           >
             <BiCategory size={18} />
             Субкатегории
+          </NavLink>
+          <NavLink
+            to="brands"
+            className={linkClass}
+            onClick={() => setMobileOpen(false)}
+          >
+            <TbBrandAppgallery size={18} />
+            Бренды
           </NavLink>
           <NavLink
             to="colors"

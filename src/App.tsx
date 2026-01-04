@@ -7,6 +7,7 @@ import AboutProduct from "./pages/aboutProduct";
 import Categories from "./pages/categories";
 import Colors from "./pages/colors";
 import SubCategories from "./pages/subCategories";
+import Brands from "./pages/brands";
 const App = () => {
   const router = createBrowserRouter([
     {
@@ -40,6 +41,10 @@ const App = () => {
         {
           path: "SubCategories",
           element: <SubCategories />,
+        },
+        {
+          path: "brands",
+          element: <Brands />,
         },
       ],
     },
