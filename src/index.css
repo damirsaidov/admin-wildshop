@@ -149,7 +149,9 @@ body {
 .ant-modal-mask {
   background-color: rgba(0, 0, 0, 0.7) !important;
 }
-
+input::placeholder {
+  color: grey;
+}
 @media (max-width: 520px) {
   .navbar {
     height: auto;
