@@ -13,7 +13,6 @@ type Product = {
   image: string;
 };
 const Home = () => {
-  
   const [images, setImages] = useState<File[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -128,11 +127,18 @@ const Home = () => {
       alert("Ошибка при редактировании");
       return;
     }
-
+    useEffect(() => {
+      if (brands?.length == 1) setBrandId(brands[0].id);
+    }, [brands]);
+    useEffect(() => {
+      if (colors?.length == 1) setColorId(colors[0].id);
+    }, [colors]);
+    useEffect(() => {
+      if (subCategory?.length == 1) setSubCategId(subCategory[0].id);
+    }, [subCategory]);
     setEditModal(false);
     getProducts();
   };
-
   const openEdit = (p: any) => {
     setEditId(p.id);
     setBrandId(p.brandId);

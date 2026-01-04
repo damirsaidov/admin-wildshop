@@ -70,6 +70,9 @@ const Categories = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    if (categs.length == 1) setCategId(categs[0].id);
+  }, [categs]);
   function openEditModal(sub: any) {
     setEditId(sub.id);
     setEditName(sub.subCategoryName);
@@ -118,12 +121,14 @@ const Categories = () => {
           className="p-2 w-full sm:w-54 border border-gray-400 rounded"
         />
         <select
-          value={categId}
+          value={categId ?? ""}
           className="border border-gray-400 w-fit py-2.75 sm:w-62 p-2 rounded"
-          onChange={(e) => setCategId(e.target.value)}
+          onChange={(e) => setCategId(Number(e.target.value))}
         >
           {categs.map((e: any) => (
-            <option value={e.id}>{e.categoryName}</option>
+            <option key={e.id} value={e.id}>
+              {e.categoryName}
+            </option>
           ))}
         </select>
         <button className="px-4 py-2 rounded bg-blue-500 w-full sm:w-auto">
